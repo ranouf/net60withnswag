@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+		<LangVersion>latest</LangVersion>
+		<PackageId>SK.Events</PackageId>
+		<Version>1.0.1</Version>
+		<Description>Manage Events</Description>
+		<Authors>Sidekick Interactive</Authors>
+		<Company>Sidekick Interactive</Company>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Autofac" Version="6.3.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+	</ItemGroup>
+
+</Project>

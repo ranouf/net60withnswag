@@ -1,0 +1,8 @@
+﻿:root {
+	--primaryColor: #01537C;
+	--secondaryColor: #005279;
+	--bgMenuActive: #005279;
+	--bgButton: #01537C;
+	/*--logoImageUrl: url('https://[YOUR LOGO IMAGE URL]');*/
+	--bgAside: var(--primaryColor);
+}

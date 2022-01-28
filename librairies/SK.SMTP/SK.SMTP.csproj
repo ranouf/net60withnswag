@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+		<LangVersion>latest</LangVersion>
+		<PackageId>SK.SMTP</PackageId>
+		<Version>1.0.3</Version>
+		<Description>Manage SMTP</Description>
+		<Authors>Sidekick Interactive</Authors>
+		<Company>Sidekick Interactive</Company>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MimeKit" Version="3.1.0" />
+		<PackageReference Include="Moq" Version="4.16.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\SK.Settings\SK.Settings.csproj" />
+	</ItemGroup>
+
+</Project>

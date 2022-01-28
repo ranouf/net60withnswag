@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+		<LangVersion>latest</LangVersion>
+		<PackageId>SK.SMS</PackageId>
+		<Version>1.0.2</Version>
+		<Description>Manage SMS</Description>
+		<Authors>Sidekick Interactive</Authors>
+		<Company>Sidekick Interactive</Company>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Autofac" Version="6.3.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+		<PackageReference Include="Twilio" Version="5.70.0" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+	</ItemGroup>
+
+</Project>
