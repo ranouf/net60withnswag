@@ -1,42 +1,21 @@
-
-using ApiWithAuthentication.Domains.Core.Identity.Configuration;
-using ApiWithAuthentication.Domains.Core.Identity.Entities;
-using ApiWithAuthentication.Domains.Infrastructure.SqlServer;
 using ApiWithAuthentication.Librairies.Common;
 using ApiWithAuthentication.Servers.API;
 using ApiWithAuthentication.Servers.API.Configuration;
 using ApiWithAuthentication.Servers.API.Filters;
 using ApiWithAuthentication.Servers.API.Middlewares;
-using ApiWithAuthentication.Servers.API.SignalR;
-using ApiWithAuthentication.Servers.API.SignalR.Hubs;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using SK.Authentication.Extensions;
-using SK.Settings.HealthChecks;
-using SK.Smtp.Configuration;
-using SK.Smtp.HealthChecks;
-using SK.Storage.Configuration;
 using StackExchange.Profiling;
-using Swashbuckle.AspNetCore.SwaggerUI;
-using System;
 using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,36 +28,9 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
     builder.RegisterModule<APIModule>();
 });
 
-// SQL Server
-builder.Services.AddDbContext<SKSamplesDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("Default"),
-        opt => opt.EnableRetryOnFailure()
-    )
-);
-
-// Identity
-builder.Services
-    .AddIdentity<User, Role>(options =>
-    {
-        options.SignIn.RequireConfirmedEmail = true;
-        options.Lockout.AllowedForNewUsers = false;
-    })
-    .AddEntityFrameworkStores<SKSamplesDbContext>()
-    .AddDefaultTokenProviders()
-    .AddUserStore<UserStore<User, Role, SKSamplesDbContext, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityUserToken<Guid>, IdentityRoleClaim<Guid>>>()
-    .AddRoleStore<RoleStore<Role, SKSamplesDbContext, Guid, UserRole, IdentityRoleClaim<Guid>>>();
-
 //Caching response for middlewares
 builder.Services.AddResponseCaching();
 builder.Services.AddMemoryCache();
-
-// Authentication
-builder.Services.RegisterAuthentication();
-
-// SignalR
-builder.Services.AddSignalR();
-builder.Services.AddSingleton<IUserIdProvider, UserIdProvider>();
 
 // Insights
 builder.Services.AddApplicationInsightsTelemetry(builder.Configuration);
@@ -140,16 +92,12 @@ builder.Services.AddHealthChecksUI(setupSettings: options =>
 }).AddInMemoryStorage();
 
 builder.Services.AddHealthChecks()
-    .AddCheck<SmtpHealthCheck>("SMTP")
-    .AddAzureBlobStorage(builder.Configuration["AzureStorage:ConnectionString"])
-    .AddCheckSettings<IdentitySettings>()
-    .AddCheckSettings<SmtpSettings>()
-    .AddCheckSettings<AzureStorageSettings>()
-    .AddDbContextCheck<SKSamplesDbContext>("Default");
+    .AddAzureBlobStorage(builder.Configuration["AzureStorage:ConnectionString"]);
 
 // Profiling
 builder.Services.AddMemoryCache();
-builder.Services.AddMiniProfiler(options => {
+builder.Services.AddMiniProfiler(options =>
+{
     options.PopupRenderPosition = RenderPosition.Left;
     options.RouteBasePath = "/profiler";
     options.ColorScheme = StackExchange.Profiling.ColorScheme.Auto;
@@ -163,10 +111,7 @@ builder.Services.AddControllers();
 
 // Settings
 builder.Services
-    .AddOptions()
-    .Configure<IdentitySettings>(builder.Configuration.GetSection("Identity"))
-    .Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"))
-    .Configure<AzureStorageSettings>(builder.Configuration.GetSection("AzureStorage"));
+    .AddOptions();
 
 var app = builder.Build();
 app.UseRouting();
@@ -221,9 +166,6 @@ app.UseHealthChecksUI(config =>
 
 app.UseEndpoints(endpoints =>
 {
-    // SignalR
-    endpoints.MapHub<BaseHub>("/hub");
-
     // Controllers
     endpoints.MapControllers();
 });
@@ -242,26 +184,6 @@ app.Use(async (context, next) =>
     }
 });
 
-// Last operations before running the API
-await InitializeDataBasesAsync(app.Services);
-
 await app.RunAsync();
-
-
-static async Task InitializeDataBasesAsync(IServiceProvider services)
-{
-    var logger = services.GetRequiredService<ILogger<Program>>();
-    try
-    {
-        logger.LogInformation("Starting the SQLServerDB initialization.");
-        await DbInitializer.InitializeAsync(services, logger);
-        logger.LogInformation("The SQLServerDB initialization has been done.");
-    }
-    catch (Exception e)
-    {
-        logger.LogError("An error occurred while initialization the SQLServerDB.", e);
-        throw;
-    }
-}
 
 public partial class Program { }

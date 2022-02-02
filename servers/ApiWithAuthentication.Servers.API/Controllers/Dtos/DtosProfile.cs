@@ -1,6 +1,4 @@
-﻿using SK.Paging;
-using ApiWithAuthentication.Servers.API.Controllers.Dtos.Paging;
-using AutoMapper;
+﻿using AutoMapper;
 
 namespace ApiWithAuthentication.Servers.API.Controllers.Dtos
 {
@@ -8,9 +6,6 @@ namespace ApiWithAuthentication.Servers.API.Controllers.Dtos
     {
         public DtosProfile()
         {
-            CreateMap(typeof(PagedResult<>), typeof(PagedResultDto<>));
-            CreateMap(typeof(PagedResult<,>), typeof(PagedResultDto<,>));
-            CreateMap(typeof(PagedResult<>), typeof(PagedResultDto<,>));
         }
     }
 }

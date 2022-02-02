@@ -1,5 +1,4 @@
-﻿using SK.Exceptions;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Linq;
 
@@ -12,7 +11,7 @@ namespace ApiWithAuthentication.Servers.API.Filters
         {
             if (!context.ModelState.IsValid)
             {
-                throw new LocalException(context.ModelState.First().Value.Errors.First().ErrorMessage);
+                throw new Exception(context.ModelState.First().Value.Errors.First().ErrorMessage);
             }
         }
     }

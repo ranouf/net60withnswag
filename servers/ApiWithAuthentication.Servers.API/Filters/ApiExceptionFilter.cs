@@ -1,14 +1,11 @@
-﻿using SK.Exceptions;
-
-using SK.Session;
-using ApiWithAuthentication.Servers.API.Filters.Dtos;
+﻿using ApiWithAuthentication.Servers.API.Filters.Dtos;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 
 namespace ApiWithAuthentication.Servers.API.Filters
 {
@@ -18,35 +15,22 @@ namespace ApiWithAuthentication.Servers.API.Filters
     {
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<ApiExceptionFilter> _logger;
-        private readonly IUserSession _session;
 
         public ApiExceptionFilter(
             IWebHostEnvironment environment,
-            ILogger<ApiExceptionFilter> logger,
-            IUserSession session)
+            ILogger<ApiExceptionFilter> logger)
         {
             _environment = environment;
             _logger = logger;
-            _session = session;
         }
 
         public override void OnException(ExceptionContext context)
         {
             ApiErrorDto apiError;
             var properties = new Dictionary<string, string>{
-                { "UserId",  _session.UserId?.ToString() }
             };
 
-            if (context.Exception is LocalException)
-            {
-                _logger.LogInformation(context.Exception.Message, properties);
-
-                var ex = context.Exception as LocalException;
-                context.Exception = null;
-                apiError = new ApiErrorDto(ex.Message);
-                context.HttpContext.Response.StatusCode = ex.StatusCode;
-            }
-            else if (context.Exception is UnauthorizedAccessException)
+            if (context.Exception is UnauthorizedAccessException)
             {
                 _logger.LogWarning(context.Exception.Message, properties);
 

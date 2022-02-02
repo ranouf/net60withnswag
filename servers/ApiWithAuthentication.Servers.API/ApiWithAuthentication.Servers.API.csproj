@@ -62,10 +62,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\domains\ApiWithAuthentication.Domains.Core\ApiWithAuthentication.Domains.Core.csproj" />
-		<ProjectReference Include="..\..\domains\ApiWithAuthentication.Domains.Infrastructure\ApiWithAuthentication.Domains.Infrastructure.csproj" />
 		<ProjectReference Include="..\..\librairies\ApiWithAuthentication.Librairies.Common\ApiWithAuthentication.Librairies.Common.csproj" />
-		<ProjectReference Include="..\..\librairies\SK.Authentication\SK.Authentication.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Extensions\" />
 	</ItemGroup>
 
 	

@@ -1,4 +1,4 @@
-﻿using ApiWithAuthentication.Domains.Core;
+﻿using ApiWithAuthentication.Librairies.Common;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ApiWithAuthentication.Servers.API.Attributes
